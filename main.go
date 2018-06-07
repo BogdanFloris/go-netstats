@@ -23,8 +23,10 @@ type bytesTuple struct {
 // map
 var statsMap = make(map[string]*bytesTuple)
 
-// flags
+// sleep modifier flag
 var sleepModifier = flag.Int("s", 5, "sleep timer")
+
+// continuous stream flag
 var continuousStream = flag.Bool(
 	"c", false, "make a continuous stream or just a one time run")
 
