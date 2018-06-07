@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"math"
 	"os/exec"
 	"strconv"
 	"strings"
@@ -13,8 +14,8 @@ import (
 // bytesTuple is a struct that represents a tuple
 // with two fields, bytesIn and bytesOut
 type bytesTuple struct {
-	bytesIn  int
-	bytesOut int
+	bytesIn  int64
+	bytesOut int64
 }
 
 var statsMap = make(map[string]*bytesTuple)
@@ -27,13 +28,13 @@ func main() {
 	}
 	// get the sums
 	sumIn, sumOut := sumUsage()
-	fmt.Printf("Total received bytes: %v\n", sumIn)
-	fmt.Printf("Total sent bytes: %v\n", sumOut)
+	fmt.Printf("Total received bytes: %s\n", humanReadbleByteCount(sumIn))
+	fmt.Printf("Total sent bytes: %s\n", humanReadbleByteCount(sumOut))
 }
 
-func sumUsage() (int, int) {
-	sumBytesIn := 0
-	sumBytesOut := 0
+func sumUsage() (int64, int64) {
+	var sumBytesIn int64
+	var sumBytesOut int64
 	for _, v := range statsMap {
 		sumBytesIn += v.bytesIn
 		sumBytesOut += v.bytesOut
@@ -67,11 +68,11 @@ func storeInMap(outLines []string) {
 		// split the line into words
 		lineData := strings.Split(line, ",")
 		// convert the numbers to ints and check for erros
-		in, err := strconv.Atoi(lineData[2])
+		in, err := strconv.ParseInt(lineData[2], 10, 64)
 		if err != nil {
 			log.Fatal(err)
 		}
-		out, err := strconv.Atoi(lineData[3])
+		out, err := strconv.ParseInt(lineData[3], 10, 64)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -80,4 +81,14 @@ func storeInMap(outLines []string) {
 		// store them in the map
 		statsMap[lineData[1]] = &tuple
 	}
+}
+
+func humanReadbleByteCount(bytes int64) string {
+	var unit int64 = 1024
+	if bytes < unit {
+		return string(bytes) + "B"
+	}
+	exp := int64(math.Log(float64(bytes)) / math.Log(float64(unit)))
+	pre := "kMGTPE"[exp-1]
+	return fmt.Sprintf("%.1f %cB", float64(bytes)/math.Pow(float64(unit), float64(exp)), pre)
 }
