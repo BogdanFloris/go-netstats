@@ -1,4 +1,4 @@
-// Copyright 2018 bogdanfloris
+// Learning Exercise 2018 bogdanfloris
 // Main program of the go-netstats application
 package main
 

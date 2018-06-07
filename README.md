@@ -1,4 +1,4 @@
-# go-netstats
+# LEARNING EXERCISE go-netstats
 A simple command-line bandwidth monitor for macOS written in Go.
 # Description
 go-netstats is a simple command-line application that gets data about network usage from the nettop program, parses it and displays the amount of data that was sent and received over the network.
