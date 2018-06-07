@@ -3,12 +3,14 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"math"
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // bytesTuple is a struct that represents a tuple
@@ -18,14 +20,37 @@ type bytesTuple struct {
 	bytesOut int64
 }
 
+// map
 var statsMap = make(map[string]*bytesTuple)
 
+// flags
+var sleepModifier = flag.Int("s", 5, "sleep timer")
+var continuousStream = flag.Bool(
+	"c", false, "make a continuous stream or just a one time run")
+
 func main() {
+	// parse the flags
+	flag.Parse()
+	if !*continuousStream {
+		runOnce()
+	} else {
+		stream()
+	}
+}
+
+func stream() {
+	for {
+		runOnce()
+		time.Sleep(time.Duration(*sleepModifier) * time.Second)
+	}
+}
+
+func runOnce() {
 	parseNettop()
 	// print the map
-	for k, v := range statsMap {
+	/*for k, v := range statsMap {
 		fmt.Printf("%s -> %v\n", k, *v)
-	}
+	}*/
 	// get the sums
 	sumIn, sumOut := sumUsage()
 	fmt.Printf("Total received bytes: %s\n", humanReadbleByteCount(sumIn))
