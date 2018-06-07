@@ -32,13 +32,16 @@ func main() {
 	fmt.Printf("Total sent bytes: %s\n", humanReadbleByteCount(sumOut))
 }
 
+// sum up usage
 func sumUsage() (int64, int64) {
 	var sumBytesIn int64
 	var sumBytesOut int64
+	// sum up the bytes in or bytes out
 	for _, v := range statsMap {
 		sumBytesIn += v.bytesIn
 		sumBytesOut += v.bytesOut
 	}
+	// return the sums
 	return sumBytesIn, sumBytesOut
 }
 
@@ -83,6 +86,7 @@ func storeInMap(outLines []string) {
 	}
 }
 
+// makes bytes into human readable types
 func humanReadbleByteCount(bytes int64) string {
 	var unit int64 = 1024
 	if bytes < unit {
