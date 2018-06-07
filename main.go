@@ -21,6 +21,24 @@ var statsMap = make(map[string]*bytesTuple)
 
 func main() {
 	parseNettop()
+	// print the map
+	for k, v := range statsMap {
+		fmt.Printf("%s -> %v\n", k, *v)
+	}
+	// get the sums
+	sumIn, sumOut := sumUsage()
+	fmt.Printf("Total received bytes: %v\n", sumIn)
+	fmt.Printf("Total sent bytes: %v\n", sumOut)
+}
+
+func sumUsage() (int, int) {
+	sumBytesIn := 0
+	sumBytesOut := 0
+	for _, v := range statsMap {
+		sumBytesIn += v.bytesIn
+		sumBytesOut += v.bytesOut
+	}
+	return sumBytesIn, sumBytesOut
 }
 
 // parses the nettop output
@@ -41,10 +59,6 @@ func parseNettop() {
 	outLines = outLines[:len(outLines)-1]
 	// loop over the output lines from nettop
 	storeInMap(outLines)
-	// print the map
-	for k, v := range statsMap {
-		fmt.Printf("%s -> %v\n", k, v)
-	}
 }
 
 // stores the output from nettop in the map
