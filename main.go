@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"net/smtp"
 	"os/exec"
 	"strconv"
 	"strings"
@@ -55,8 +56,11 @@ func runOnce() {
 	}*/
 	// get the sums
 	sumIn, sumOut := sumUsage()
-	fmt.Printf("Total received bytes: %s\n", humanReadbleByteCount(sumIn))
-	fmt.Printf("Total sent bytes: %s\n", humanReadbleByteCount(sumOut))
+	output := fmt.Sprintf("Total received bytes: %s\n", humanReadbleByteCount(sumIn)) +
+		fmt.Sprintf("Total sent bytes: %s\n", humanReadbleByteCount(sumOut))
+	fmt.Print(output)
+	// send the email with the output
+	// send(output)
 }
 
 // sum up usage
@@ -111,6 +115,32 @@ func storeInMap(outLines []string) {
 		// store them in the map
 		statsMap[lineData[1]] = &tuple
 	}
+}
+
+// sends an email with given body
+func send(body string) {
+	// define from email
+	from := "bogdan.floris@gmail.com"
+	// define password
+	// TODO: make a cypher
+	// not the correct password until cypher is made
+	pass := ""
+	// define to email
+	to := "bogdan.floris@gmail.com"
+	// define the message
+	msg := "From: " + from + "\n" +
+		"To: " + to + "\n" +
+		"Subject: Bandwidth usage output\n\n" +
+		body
+	// send the email
+	err := smtp.SendMail("smtp.gmail.com:587",
+		smtp.PlainAuth("", from, pass, "smtp.gmail.com"),
+		from, []string{to}, []byte(msg))
+	if err != nil {
+		log.Printf("smtp error: %s", err)
+		return
+	}
+	log.Print("sent, visit http://mail.google.com")
 }
 
 // makes bytes into human readable types
