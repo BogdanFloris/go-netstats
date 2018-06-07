@@ -122,8 +122,8 @@ func send(body string) {
 	// define from email
 	from := "bogdan.floris@gmail.com"
 	// define password
-	// TODO: make a cypher
-	// not the correct password until cypher is made
+	// TODO: make a cipher
+	// not the correct password until cipher is made
 	pass := ""
 	// define to email
 	to := "bogdan.floris@gmail.com"
